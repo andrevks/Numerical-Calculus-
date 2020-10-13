@@ -1,52 +1,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#define e 2.71828182845904523536028747135266249775724709369995
 
+// double f(float x){
+//   return pow((x - 2),2) - log(x); 
+// }
+
+// double g(float x){
+//   return x - (pow((x - 2),2) - log(x))/(2*(x-2)-1/x); 
+// }
 
 double f(float x){
-  return pow((x - 2),2) - log(x); 
+  return (pow(e,-x) - x); 
 }
 
+double fLinha(float x){
+  return  (-pow(e,-x) - 1);
+}
 
 double g(float x){
-  return x - (pow((x - 2),2) - log(x))/(2*(x-2)-1/x); 
+  return  x - (f(x)/fLinha(x));
 }
 
-float newtonRaphson(float x0,float E1, float E2){
+void newtonRaphson(float x0,float E, int kMax){
   int k = 0;
   float xM,x = 0.0;
   printf("k     Xk     F(xk)      F'(xk)    Xk+1 ");
   do{
     printf("\n%d %.f %f %f %f \n",k, x0,f(x0),g(x0),x);
-     if( fabs(f(x0))<E1){
+     if( fabs(f(x0))<E){
       xM = x0;
-      return xM;
+      printf("\n>>> A raiz, respeitando a tolerância solicitada, foi encontrada após %d iterações\n",k);
+      printf("\n>> Raiz aproximada: %.8f\n",xM);
+   
     } 
     k++;
     x = g(x0);
      printf("\n%d %f %f %f %f \n",k, x0,f(x0),g(x0),x);
-    if( fabs(x - x0) <E2){
+    if( fabs(x - x0) <E){
       xM = x;
-    return xM;
+      printf("\n>>> A raiz, respeitando a tolerância solicitada, foi encontrada após %d iterações\n",k);
+      printf("\n>> Raiz aproximada: %.8f\n",xM);
+ 
     }
 
     x0 = x;
     
+  }while(k <= kMax);
 
-  }while(1);
-
+  printf("\n>>> ERRO! \nChegou ao número máximo de iterações sem alcançar a tolerância solicitada. \nSugestões:\n i) Tentar acrescentar mais iterações \n ii) Chutar um valor inicial mais próximo da raiz\n");
 
 }
 
 
 int main(void) {
-  float x0,E1,E2;
+  float x0,E,kMax;
 
-  printf("\nType the initial values of x0, E1 and E2\n");
-  scanf("%f %f %f",&x0,&E1,&E2);
+  printf("\nDigite o valor inicial(x0) e a precisão(E) e Número máximo de iteração(kMax):\n");
+  scanf("%f %f %f",&x0,&E,&kMax);
 
-  float result = newtonRaphson( x0, E1,E2);
-  printf("\nFinal Result:%.6f\n",result);
+  newtonRaphson( x0, E, kMax);
+  
+  
   return 0;
 }
 
